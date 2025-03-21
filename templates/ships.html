@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2>Naves Disponíveis</h2>
+    <ul>
+        {% for ship in ships %}
+            <li>{{ ship.name }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
