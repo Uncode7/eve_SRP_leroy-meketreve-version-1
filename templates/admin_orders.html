@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Pedidos</title>
+</head>
+<body>
+    <h2>Pedidos de Naves</h2>
+    <table border="1">
+        <tr>
+            <th>ID do Pedido</th>
+            <th>Usuário</th>
+            <th>Nave</th>
+            <th>Quantidade</th>
+            <th>Status</th>
+            <th>Ações</th>
+        </tr>
+        {% for order in orders %}
+        <tr>
+            <td>{{ order['order_id'] }}</td>
+            <td>{{ order['username'] }}</td>
+            <td>{{ order['ship_name'] }}</td>
+            <td>{{ order['quantity'] }}</td>
+            <td>{{ order['status'] }}</td>
+            <td>
+                {% if order['status'] != 'delivered' %} 
+                    <a href="{{ url_for('deliver_order', order_id=order['order_id']) }}">Marcar como entregue</a>
+                {% endif %}
+                <a href="{{ url_for('delete_order', order_id=order['order_id']) }}">Deletar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <p><a href="{{ url_for('logout') }}">Sair</a></p>
+</body>
+</html>

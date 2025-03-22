@@ -1,95 +1,27 @@
-{% extends 'base.html' %}
-{% block content %}
-    <h1>Dashboard</h1>
-    <p>Bem-vindo, {{ current_user.username }}!</p>
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - EVE Ship Request</title>
+</head>
+<body>
+    <h2>Dashboard</h2>
+    <p>Bem-vindo! Aqui estão as naves disponíveis:</p>
     
-    {% if current_user.role == 'user' %} 
-        <h2>Solicitar Nave</h2>
-         <!--form para solicitar nave-->
-        <form action="/request_ship" method="post">
-            <label for="ship">Escolha a nave:</label>
-            <select name="ship" id="ship">
-                {% for ship in ships %}
-                    <option value="{{ ship.id }}">{{ ship.name }}</option>
-                {% endfor %}
-            </select>
-            <label for="quantity">Quantidade:</label>
-            <input type="number" name="quantity" min="1" value="1">
-            <button type="submit">Solicitar</button>
-        </form>
-        
-        <h2>Meus Pedidos</h2>
+    <form action="{{ url_for('order') }}" method="POST">
         <ul>
-            {% for Order in user_orders %}
-                <li>{{ Order.ship.name }} - {{ Order.quantity }} <a href="/delete_order/{{ Order.id }}">Cancelar</a></li>
-            {% endfor %}
-            
-        </ul>
-    {% endif %}
-    
-    {% if current_user.role == 'manager' or current_user.role == 'admin' %}
-        <h2>Gerenciar Naves</h2>
-        <!--form para adicionar nave-->
-        <h2>Adicionar Nave</h2>
-        <h2>LISTA DE NAVES</h2>
-        <P><table style="margin: auto; width: 80%; max-width: 600px; border-collapse: collapse;">
-          <thead>
-              <tr>
-                  <th style="border: 1px solid #ccc; padding: 8px;">Naves</th>
-                  <th style="border: 1px solid #ccc; padding: 8px;">Quantidade</th>
-                  <th style="border: 1px solid #ccc; padding: 8px;">Ações</th>
-              </tr>
-          </thead>
-          <tbody>
             {% for ship in ships %}
-            <tr>
-              <td style="border: 1px solid #ccc; padding: 8px;">{{ ship.name }}</td>
-              <td style="border: 1px solid #ccc; padding: 8px;">{{ ship.quantity }}</td>
-              <td style="border: 1px solid #ccc; padding: 8px;"><a href="/delete_ship/{{ ship.id }}" style="color: red;">Excluir</a>
-              </td>
-               </td>
-            </tr>
+                <li>
+                    <label>{{ ship['name'] }}:</label>
+                    <input type="number" name="ship_{{ ship['id'] }}" min="0" value="0">
+                </li>
             {% endfor %}
-          </tbody>
-      </table></P>
-        <form action="/add_ship" method="post">
-            <input type="text" name="ship_name" placeholder="Nome da nave">
-            <button type="submit">Adicionar</button>
-        </form>
-        
-    {% endif %}
-    
-    {% if current_user.role == 'admin' %}
-    <h2>Gerenciar Usuários</h2>
-    
-  <h1 style="margin:auto">Lista de Usuários</h1>
-  <table style="margin: auto; width: 80%; max-width: 600px; border-collapse: collapse;">
-    <thead>
-      <tr>
-        <th style="border: 1px solid #ccc; padding: 8px;">Usuário</th>
-        <th style="border: 1px solid #ccc; padding: 8px;">Cargo</th>
-        <th style="border: 1px solid #ccc; padding: 8px;">Ações</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for user in users %}
-      <tr>
-        <td style="border: 1px solid #ccc; padding: 8px;">{{ user.username }}</td>
-        <td style="border: 1px solid #ccc; padding: 8px;">{{ user.role }}</td>
-        <td style="border: 1px solid #ccc; padding: 8px;">
-          {% if user.role != 'admin' %}
-            <a href="/promote_user/{{ user.id }}">Promover</a> |
-            <a href="/delete_user/{{ user.id }}" style="color: red;">Excluir</a>
-          {% else %}
-            Nenhuma ação
-          {% endif %}
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-
-{% endif %}
-
-    <a href="{{ url_for('logout') }}">Sair</a>
-{% endblock %}
+        </ul>
+        <button type="submit">Enviar Pedido</button>
+    </form>
+<p>{% if session.get('role') == 'admin' %}
+  <p><a href="{{ url_for('admin_orders') }}">Área Administrativa</a></p>
+{% endif %}</p>
+    <p><a href="{{ url_for('logout') }}">Sair</a></p>
+</body>
+</html>
